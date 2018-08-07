@@ -101,7 +101,11 @@
     document.nbjs_translations = {{ nbjs_translations|safe }};
     document.documentElement.lang = navigator.language.toLowerCase();
     </script>
-
+    <style>
+      #header {
+        display: none !important
+      }
+    </style>
     {% block meta %}
     {% endblock %}
 
@@ -190,6 +194,39 @@ dir="ltr">
     }
   }
   _remove_token_from_url();
+</script>
+<script>
+  /*var myConfObj = {
+    iframeMouseOver : true
+  }
+  window.addEventListener('blur',function(obj){
+    if(myConfObj.iframeMouseOver){
+    console.log(obj);
+    document.getElementById('run_all_cells').click();
+    }
+  });*/
+  window.onmessage = function(e){
+    if (e.data == 'runall') {
+      console.log("[Debug]: Msg received Jupyter");
+      document.getElementById('run_all_cells').click();
+      document.getElementById('save_checkpoint').click();
+      //document.getElementById('download_html').click();
+      setTimeout(function(){
+        timer = setInterval(function(){
+          if(document.getElementById('kernel_indicator_icon').className === "kernel_idle_icon")
+          {
+            document.getElementById('save_checkpoint').click();
+            window.parent.postMessage("build_complete", '*');
+            clearInterval(timer);
+            timer = false;
+          }
+        
+        }, 1000);
+      },500);
+      
+    }
+  };
+
 </script>
 </body>
 
